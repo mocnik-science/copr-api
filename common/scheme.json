@@ -1,0 +1,280 @@
+{
+  "urls": {
+    "endpoint": "http://127.0.0.1:8081",
+    "files": {
+      "_data": "representations.json",
+      "_info": "info.json"  
+    },
+    "representations": "representations.json",
+    "info": "info.json"
+  },
+  "functions": {
+    "stats": {
+      "resultType": "dict",
+      "query": {
+        "number of representations": "length(*)",
+        "number of objects": "length(*.objects[])"
+      }
+    },
+    "apiVersion": {
+      "resultType": "string",
+      "query": "'0.1'"
+    }
+  },
+  "macros": {
+    "classes": {
+      "assetOrPlace": {"repr:asset": "asset", "repr:place": "place"},
+      "someComparator": {"repr:individualComparator": "individualComparator", "repr:collectionComparator": "collectionComparator", "repr:holisticComparator": "holisticComparator"}
+    },
+    "queries": {
+      "==": {"query": "{parameter} == `{value}`", "removeParameterPostfix": "_"},
+      "contains": {"query": "{parameter} && contains({parameter}, `{value}`)"},
+      "has": {"query": "{not_value}{parameter}", "removeParameterPrefix": "has", "startParameterLower": true}
+    }
+  },
+  "elementTypes": [
+    {
+      "name": "representation",
+      "parameters": {
+        "id": "representation.id",
+        "version": "representation.version",
+        "label": "representation.label",
+        "natural": "representation.natural",
+        "description": "representation.description",
+        "assets": {"query": "objects[?class == 'repr:asset']", "class": "asset"},
+        "places": {"query": "objects[?class == 'repr:place']", "class": "place"},
+        "references": {"query": "references", "class": "reference"},
+        "literature": {"query": "literature", "class": "literature"}
+      },
+      "query": [
+        "* | [",
+        {
+          "prefix": "?",
+          "concat": "&&",
+          "query": [
+            {"parameter": "label", "macro": "contains", "query": "representation.{parameter} && contains(representation.{parameter}, `{value}`)"},
+            {"parameter": "label_", "macro": "==", "query": "representation.{parameter} == `{value}`"},
+            {"parameter": "description", "macro": "contains", "query": "representation.{parameter} && contains(representation.{parameter}, `{value}`)"},
+            {"parameter": "natural", "macro": "==", "query": "representation.{parameter} == `{value}`"}
+          ]
+        },
+        "]"
+      ]
+    },
+    {
+      "name": "object",
+      "parameters": {
+        "id": "id",
+        "label": "label",
+        "description": "description",
+        "files": {"query": "files", "class": "file"},
+        "selections": {"query": "selections", "class": "selection"},
+        "aspects": {"query": "aspects", "class": "aspect"}
+      }
+    },
+    {
+      "name": "place",
+      "baseclass": "object",
+      "parameters": {},
+      "query": [
+        "*.objects[",
+        {
+          "prefix": "?",
+          "concat": "&&",
+          "query": [
+            "class == 'repr:place'",
+            {"parameter": "label", "macro": "contains"},
+            {"parameter": "label_", "macro": "=="},
+            {"parameter": "description", "macro": "contains"},
+            {"parameter": "hasFiles", "macro": "has"}
+          ]
+        },
+        "][]"
+      ]
+    },
+    {
+      "name": "asset",
+      "baseclass": "object",
+      "parameters": {
+        "assetKind": "assetKind",
+        "manifestationKind": "manifestationKind.label",
+        "representationKind": "representationKind.label",
+        "unique": "unique",
+        "weight": "weight"
+      },
+      "query": [
+        "*.objects[",
+        {
+          "prefix": "?",
+          "concat": "&&",
+          "query": [
+            "class == 'repr:asset'",
+            {"parameter": "label", "macro": "contains"},
+            {"parameter": "label_", "macro": "=="},
+            {"parameter": "description", "macro": "contains"},
+            {"parameter": "assetKind", "macro": "=="},
+            {"parameter": "manifestationKind", "macro": "=="},
+            {"parameter": "representationKind", "macro": "=="},
+            {"parameter": "unique", "macro": "=="},
+            {"parameter": "hasWeight", "macro": "has"},
+            {"parameter": "hasFiles", "macro": "has"}
+          ]
+        },
+        "][]"
+      ]
+    },
+    {
+      "name": "file",
+      "parameters": {
+        "filename": "filename",
+        "isTheFile": "isTheFile"
+      }
+    },
+    {
+      "name": "selection",
+      "parameters": {
+        "id": "id",
+        "x": "x",
+        "y": "y",
+        "label": "label",
+        "file": {"queries": ["filename", {"query": "*.objects[].files[?filename == `{__last}`][] | [0]", "global": true}], "class": "file"}
+      }
+    },
+    {
+      "name": "aspect",
+      "parameters": {
+        "id": "id",
+        "qualities": {"query": "qualities", "class": "quality"},
+        "comparators": {"query": "comparators", "class": "someComparator"}
+      },
+      "query": [
+        "*.objects[].aspects[",
+        {
+          "prefix": "?",
+          "concat": "&&",
+          "query": [
+            {"parameter": "qualityKind", "macro": "==", "query": "qualities[?{parameter}.label == `{value}`]"},
+            {"parameter": "qualityCanBeDescribedAs", "macro": "contains", "query": "qualities[?{parameter} && contains({parameter}, `{value}`)]"},
+            {"parameter": "qualityCanBeDescribedAs_", "macro": "==", "query": "qualities[?{parameter} == `{value}`]"},
+            {"parameter": "hasQualities", "macro": "has"},
+            {"parameter": "hasComparators", "macro": "has"}
+          ]
+        },
+        "][]"
+      ]
+    },
+    {
+      "name": "quality",
+      "parameters": {
+        "kind": "qualityKind.label",
+        "canBeDescribedAs": "qualityCanBeDescribedAs"
+      }
+    },
+    {
+      "name": "comparator",
+      "parameters": {
+        "id": "id",
+        "object": {"queries": ["id", {"query": "*.objects[?aspects[?comparators[?id == `{__last}`]]] | [0][0]", "global": true}], "class": "selection"}
+      }
+    },
+    {
+      "name": "individualComparator",
+      "baseclass": "comparator",
+      "parameters": {
+        "selection": {"queries": ["id", {"query": "*.objects[].selections[?id == `{__last}`][] | [0]", "global": true}], "class": "selection"}
+      }
+    },
+    {
+      "name": "collectionComparator",
+      "baseclass": "comparator",
+      "parameters": {
+        "hasRelevantNumberOfComparators": "hasRelevantNumberOfComparators",
+        "hasRelevantArrangementOfComparators": "hasRelevantArrangementOfComparators",
+        "hasRelevantInterplayOfComparators": "hasRelevantInterplayOfComparators",
+        "includesSelections": {"queries": ["includesSelections", {"query": "*.objects[].selections[?contains(`{__last}`, id)][]", "global": true}], "class": "selection"}
+      }
+    },
+    {
+      "name": "holisticComparator",
+      "baseclass": "comparator",
+      "parameters": {}
+    },
+    {
+      "name": "reference",
+      "parameters": {
+        "representamen": {"queries": ["representamen", {"query": "*.objects[?id == `{__last}`][] | [0]", "global": true}], "class": "assetOrPlace"},
+        "aspectOfRepresentamen": {"queries": ["aspectOfRepresentamen", {"query": "*.objects[].aspects[?id == `{__last}`][] | [0]", "global": true}], "class": "aspect"},
+        "typeOfReference": "typeOfReference",
+        "representantum": {"queries": ["representantum", {"query": "*.objects[?id == `{__last}`][] | [0]", "global": true}], "class": "assetOrPlace"},
+        "aspectOfRepresentantum": {"queries": ["aspectOfRepresentantum", {"query": "*.objects[].aspects[?id == `{__last}`][] | [0]", "global": true}], "class": "aspect"}
+      },
+      "query": [
+        "*.references[",
+        {
+          "prefix": "?",
+          "concat": "&&",
+          "query": [
+            {"parameter": "typeOfReference", "macro": "=="}
+          ]
+        },
+        "][]"
+      ]
+    },
+    {
+      "name": "literature",
+      "functionName": "literature",
+      "parameters": {
+        "type": "type",
+        "author": "author",
+        "editor": "editor",
+        "institution": "institution",
+        "title": "title",
+        "bookTitle": "bookTitle",
+        "address": "address",
+        "journal": "journal",
+        "volume": "volume",
+        "number": "number",
+        "event": "event",
+        "eventAcronym": "eventAcronym",
+        "eventNumber": "eventNumber",
+        "publisher": "publisher",
+        "edition": "edition",
+        "chapter": "chapter",
+        "url": "url",
+        "accessedDate": "accessedDate",
+        "arXivIdentifier": "arXivIdentifier",
+        "arXivSubjectClass": "arXivSubjectClass",
+        "year": "year",
+        "month": "month",
+        "pages": "pages",
+        "doi": "doi",
+        "howPublished": "howPublished",
+        "note": "note"
+      },
+      "query": [
+        "*.literature[",
+        {
+          "prefix": "?",
+          "concat": "&&",
+          "query": [
+            {"parameter": "type", "macro": "=="},
+            {"parameter": "author", "macro": "contains"},
+            {"parameter": "author_", "macro": "=="},
+            {"parameter": "editor", "macro": "contains"},
+            {"parameter": "editor_", "macro": "=="},
+            {"parameter": "title", "macro": "contains"},
+            {"parameter": "title_", "macro": "=="},
+            {"parameter": "bookTitle", "macro": "contains"},
+            {"parameter": "bookTitle_", "macro": "=="},
+            {"parameter": "journal", "macro": "contains"},
+            {"parameter": "journal_", "macro": "=="},
+            {"parameter": "event", "macro": "contains"},
+            {"parameter": "event_", "macro": "=="},
+            {"parameter": "year", "macro": "=="}
+          ]
+        },
+        "][]"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: "Corpurs of Place Representations"
+message: "If you use this software, please provide a link to the following paper about the representation of places."
+type: software
+authors:
+- family-names: "Mocnik"
+  given-names: "Franz-Benjamin"
+  orcid: "https://orcid.org/0000-0002-1759-6336"
+url: "https://github.com/mocnik-science/copr-api"
+keywords:
+- place
+- representation
+- corpus
+- api
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Mocnik"
+    given-names: "Franz-Benjamin"
+    orcid: "https://orcid.org/0000-0002-1759-6336"
+  title: "On the representation of places"
+  journal: "GeoJournal"
+  issue: 88
+  volume: 4
+  year: 2023
+  start: 4109
+  end: 4126
+  doi: 10.1007/s10708-023-10831-8

@@ -1,0 +1,45 @@
+{
+  "name": "copr",
+  "description": "Corpus of Place Representations (COPR) API",
+  "main": "src/copr.mjs",
+  "targets": {
+    "modern": {
+      "context": "browser",
+      "includeNodeModules": [],
+      "outputFormat": "global",
+      "scopeHoist": false,
+      "source": "src/copr.min.mjs"
+    },
+    "main": false
+  },
+  "scripts": {
+    "install:node": ":",
+    "install:browser": ":",
+    "install": "run-s install:*",
+    "build:node": ":",
+    "build:browser": "rm -rf ./dist && parcel build && printf '%s\n%s\n' '/**********************************************************/\n/* Corpus of Place Representations (COPR) API             */\n/* Copyright by Franz-Benjamin Mocnik, 2023               */\n/* Licensed under the CC BY-NC-ND 4.0                     */\n/**********************************************************/' \"$(cat ./dist/copr.min.js)\" > ./dist/copr.min.js",
+    "build": "run-s build:*",
+    "watch:node": ":",
+    "watch:browser": "parcel watch",
+    "watch": "run-s watch:*",
+    "test:node": "mocha",
+    "test:browser": "open -a safari ./test/test.html",
+    "test": "run-s test:*"
+  },
+  "author": "Franz-Benjamin Mocnik <mail@mocnik-science.net>",
+  "license": "CC-BY-NC-ND-4.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mocnik-science/copr-api.git"
+  },
+  "homepage": "https://purl.archive.org/copr",
+  "devDependencies": {
+    "chai": "^4.3.8",
+    "mocha": "^10.2.0",
+    "npm-run-all": "^4.1.5",
+    "parcel": "^2.9.3"
+  },
+  "dependencies": {
+    "jmespath": "^0.16.0"
+  }
+}

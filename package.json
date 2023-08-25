@@ -1,0 +1,30 @@
+{
+  "name": "copr",
+  "version": "0.0.1",
+  "description": "Corpus of Place Representations (COPR) API",
+  "main": "",
+  "scripts": {
+    "install:js": "cd copr.js && yarn install",
+    "install:py": "cd copr.py && yarn install",
+    "install": "run-s install:*",
+    "build:js": "cd copr.js && yarn build",
+    "build:py": "cd copr.py && yarn build",
+    "build": "run-s build:*",
+    "test:js": "cd copr.js && yarn test",
+    "test:py": "cd copr.py && yarn test",
+    "test": "run-s test:*"
+  },
+  "author": "Franz-Benjamin Mocnik <mail@mocnik-science.net>",
+  "license": "CC-BY-NC-ND-4.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mocnik-science/copr-api.git"
+  },
+  "homepage": "https://purl.archive.org/copr",
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  },
+  "workspaces": [
+    "copr.js/*"
+  ]
+}
