@@ -1,5 +1,5 @@
 {
-  "name": "copr",
+  "name": "copr.js",
   "description": "Corpus of Place Representations (COPR) API",
   "main": "src/copr.mjs",
   "targets": {
@@ -13,18 +13,15 @@
     "main": false
   },
   "scripts": {
-    "install:node": ":",
-    "install:browser": ":",
-    "install": "run-s install:*",
     "build:node": ":",
     "build:browser": "rm -rf ./dist && parcel build && printf '%s\n%s\n' '/**********************************************************/\n/* Corpus of Place Representations (COPR) API             */\n/* Copyright by Franz-Benjamin Mocnik, 2023               */\n/* Licensed under the CC BY-NC-ND 4.0                     */\n/**********************************************************/' \"$(cat ./dist/copr.min.js)\" > ./dist/copr.min.js",
-    "build": "run-s build:*",
+    "build": "run-s 'build:*'",
     "watch:node": ":",
     "watch:browser": "parcel watch",
-    "watch": "run-s watch:*",
+    "watch": "run-p 'watch:*'",
     "test:node": "mocha",
     "test:browser": "open -a safari ./test/test.html",
-    "test": "run-s test:*"
+    "test": "run-s 'test:*'"
   },
   "author": "Franz-Benjamin Mocnik <mail@mocnik-science.net>",
   "license": "CC-BY-NC-ND-4.0",

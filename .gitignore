@@ -1,4 +1,3 @@
-/copr.js/.parcel-cache
 /copr.js/dist
 /copr.py/MANIFEST
 /copr.py/**/__pycache__
@@ -8,6 +7,12 @@
 /copr.py/copr/__info__.py
 /copr.py/copr/**/*.pyc
 /copr.py/copr.egg-info
+/copr.py/.pytest_cache
 /copr.py/.coverage
+.parcel-cache
+.yarn
+!.yarn/releases
+!.yarn/plugins
+.pnp.*
 node_modules
 yarn-error.log

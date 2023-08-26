@@ -4,16 +4,22 @@ The COPR API privides easy-to-use libraries to access data from the [Corpus of P
 
 ## Installation
 
-The commands `install`, `build`, `watch`, and `test` are provided individually for each library, and they are available for all libraries together (apart from the `watch` one):
+To install and build the libraries, you will need [Node.js](https://nodejs.org) and [Yarn](https://yarnpkg.com) as well as [Python3](https://www.python.org) and [pip](https://pip.pypa.io).  Then, run
 ```bash
 yarn install
 yarn build
+```
+
+You can test the libraries by running
+```bash
 yarn test
 ```
 
-## Installation: Javascript
+The commands `install`, `build`, `watch`, `test`, and possibly some further ones are provided individually for each library.
 
-To build the library, you will need [Node.js](https://nodejs.org) and [Yarn](https://yarnpkg.com).  Then, run
+## Installation: copr.js
+
+To install and build the library, you will need [Node.js](https://nodejs.org) and [Yarn](https://yarnpkg.com).  Then, run
 ```bash
 cd javascript
 yarn install
@@ -21,7 +27,7 @@ yarn build # build for production
 yarn watch # build for development
 ```
 
-## Installation: Python
+## Installation: copr.py
 
 To install the package, you will need [Python3](https://www.python.org) and [pip](https://pip.pypa.io).  Then, run
 ```bash
