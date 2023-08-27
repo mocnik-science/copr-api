@@ -1,4 +1,4 @@
-import COPR from './copr.node-no-initialize.mjs'
+import COPR from './copr.node-not-initialized.mjs'
 
 /** INITIALIZE **/
 
