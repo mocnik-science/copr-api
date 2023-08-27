@@ -39,6 +39,7 @@
     "parcel": "<2.9.0"
   },
   "dependencies": {
+    "copr.common": "github:mocnik-science/copr-api#workspace=copr.common",
     "jmespath": "^0.16.0"
   },
   "packageManager": "yarn@3.6.3"
