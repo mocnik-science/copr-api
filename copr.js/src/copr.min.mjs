@@ -1,5 +1,5 @@
 import COPR from './copr.mjs'
-import scheme from '../../common/scheme.json'
+import scheme from 'copr.common/scheme.json'
 
 /** INITIALIZE **/
 

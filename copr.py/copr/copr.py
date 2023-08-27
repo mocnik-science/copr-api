@@ -18,7 +18,7 @@ class COPR:
       return
     COPR.__initialized = True
     # load scheme
-    with open('../common/scheme.json', 'r') as file:
+    with open('../copr.common/scheme.json', 'r') as file:
       COPR._scheme = json.load(file)
     # load files
     for key, url in COPR._scheme['urls']['files'].items():

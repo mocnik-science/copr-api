@@ -9,7 +9,8 @@
     "build": "run-s 'build:*'",
     "test:js": "cd copr.js && yarn test",
     "test:py": "cd copr.py && yarn test",
-    "test": "run-s 'test:*'"
+    "test": "run-s 'test:*'",
+    "clean": "rm -rf .yarn .parcel-cache/ .pnp.* yarn.lock"
   },
   "author": "Franz-Benjamin Mocnik <mail@mocnik-science.net>",
   "license": "CC-BY-NC-ND-4.0",
@@ -22,6 +23,7 @@
     "npm-run-all": "^4.1.5"
   },
   "workspaces": [
+    "copr.common",
     "copr.js",
     "copr.py"
   ],
