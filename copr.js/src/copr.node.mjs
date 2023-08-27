@@ -15,7 +15,11 @@ COPR._jsonFromURL = async url => new Promise(resolve => {
     res.on('end', () => resolve(JSON.parse(data)))
   })
 })
-await COPR._initialize()
+try {
+  await COPR._initialize()
+} catch {
+  console.log('Warning: COPR could not be initialized.  Run `await COPR._initialize()` before using COPR.')
+}
 
 /** EXPORT **/
 
