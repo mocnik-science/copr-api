@@ -5,8 +5,8 @@ String.prototype.rstrip = function(str) { return this.endsWith(str) ? this.slice
 String.prototype.capitalizeFirst = function() { return this.length > 0 ? this.charAt(0).toUpperCase() + this.slice(1) : '' }
 String.prototype.lowerFirst = function() { return this.length > 0 ? this.charAt(0).toLowerCase() + this.slice(1) : '' }
 
-Object.prototype.hasKey = function(key) { return Object.keys(this).includes(key) }
-Object.prototype.mapValues = function(fn) { return Object.fromEntries(Object.entries(this).map(([k, v], i) => [k, fn(v, k, i)])) }
+Object.hasKey = (o, key) => Object.keys(o).includes(key)
+Object.mapValues = (o, fn) => Object.fromEntries(Object.entries(o).map(([k, v], i) => [k, fn(v, k, i)]))
 
 Array.prototype.first = function() { return this.find(x => x !== undefined) }
 
@@ -36,10 +36,10 @@ const COPR = {
     // init elements
     for (const elementType of COPR._scheme.elementTypes) {
       // init element functions
-      if (elementType.hasKey('query')) COPR[elementType.hasKey('functionName') ? elementType.functionName : elementType.name + 's'] = kwargs => COPR.__elements(elementType, kwargs)
+      if (Object.hasKey(elementType, 'query')) COPR[Object.hasKey(elementType, 'functionName') ? elementType.functionName : elementType.name + 's'] = kwargs => COPR.__elements(elementType, kwargs)
       // init element classes
       const classname = COPR._classnameForElement(elementType)
-      let baseclassname = elementType.hasKey('baseclass') ? elementType.baseclass : 'element'
+      let baseclassname = Object.hasKey(elementType, 'baseclass') ? elementType.baseclass : 'element'
       COPR[classname] = {[classname]: class extends COPR._classForName(baseclassname) {
         // JAVASCRIPT SPECIFIC: instead of COPR.Element.constructor(d, info)
         constructor(d, info) {
@@ -55,8 +55,8 @@ const COPR = {
         const ets = COPR._scheme.elementTypes.filter(et => et.name == baseclassname)
         if (ets.length == 0) break
         const et = ets.first()
-        baseclassname = et.hasKey('baseclass') ? et.baseclass : 'element'
-        if (et.hasKey('parameters')) currentClass._parameters = {...currentClass._parameters, ...et.parameters}
+        baseclassname = Object.hasKey(et, 'baseclass') ? et.baseclass : 'element'
+        if (Object.hasKey(et, 'parameters')) currentClass._parameters = {...currentClass._parameters, ...et.parameters}
       }
       // JAVASCRIPT SPECIFIC: instead of COPR.Element.__getattr__(name)
       for (const [parameter, query] of Object.entries(currentClass._parameters)) currentClass.prototype[parameter] = function() { return COPR._query(query, this._d) }
@@ -75,7 +75,7 @@ const COPR = {
   _query(query, _d=null, kwargs={}) {
     // normalize list of queries
     query = COPR.__normalizeQuery(query)
-    const queries = query.hasKey('queries') ? [...query.queries].reverse() : [query]
+    const queries = Object.hasKey(query, 'queries') ? [...query.queries].reverse() : [query]
     // loop through the queries
     let last = null
     let results = null
@@ -84,16 +84,16 @@ const COPR = {
       // build the query
       const compiledQuery = COPR.__buildSingleQuery(q, {__last: last}, kwargs)
       // execute the query
-      results = COPR._jmespath.search(_d && (!q.hasKey('global') || !q.global) ? _d : COPR._data, compiledQuery)
+      results = COPR._jmespath.search(_d && (!Object.hasKey(q, 'global') || !q.global) ? _d : COPR._data, compiledQuery)
       last = results
     }
     // create corresponding objects if requested
     const packIntoObject = x => {
-      if (!(query instanceof Object && !(query instanceof String)) || !query.hasKey('class')) return x
+      if (!(query instanceof Object && !(query instanceof String)) || !Object.hasKey(query, 'class')) return x
       let name = query.class
-      if (COPR._scheme.macros.classes.hasKey(name)) name = COPR._scheme.macros.classes[name]
+      if (Object.hasKey(COPR._scheme.macros.classes, name)) name = COPR._scheme.macros.classes[name]
       if (name instanceof Object && !(name instanceof String)) {
-        if (!name.hasKey(x.class)) return x
+        if (!Object.hasKey(name, x.class)) return x
         name = name[x.class]
       }
       return new (COPR._classForName(name))(x, COPR._info)
@@ -103,11 +103,11 @@ const COPR = {
   __validParametersForQuery(query) {
     const parameters = []
     // collect all valid parameters for the query
-    if (query.hasKey('parameter')) parameters.push(query.parameter)
-    else if (query.hasKey('query')) {
+    if (Object.hasKey(query, 'parameter')) parameters.push(query.parameter)
+    else if (Object.hasKey(query, 'query')) {
       if (query.query instanceof Array) for (const q of query.query) parameters.push(...COPR.__validParametersForQuery(q))
       else parameters.push(...COPR.__validParametersForQuery(query.query))
-    } else if (query.hasKey('queries')) for (const q of query.queries) parameters.push(...COPR.__validParametersForQuery(q))
+    } else if (Object.hasKey(query, 'queries')) for (const q of query.queries) parameters.push(...COPR.__validParametersForQuery(q))
     return parameters
   },
   __normalizeQuery(query, extend={}) {
@@ -135,27 +135,27 @@ const COPR = {
       return query
     }
     // use macros in object
-    if (qs.hasKey('macro') && COPR._scheme.macros.queries.hasKey(qs.macro))
+    if (Object.hasKey(qs,'macro') && Object.hasKey(COPR._scheme.macros.queries, qs.macro))
       qs = {...COPR._scheme.macros.queries[qs.macro], ...qs}
     // append object
-    if (qs.hasKey('concat') && qs.hasKey('query')) {
+    if (Object.hasKey(qs, 'concat') && Object.hasKey(qs, 'query')) {
       const qs2 = COPR.__buildSingleQueryArray(qs.query, kwargs)
-      if (qs2.length > 0) query.push((qs.hasKey('prefix') ? qs.prefix : '') + qs2.join(' ' + qs.concat + ' ') + (qs.hasKey('suffix') ? qs.suffix : ''))
+      if (qs2.length > 0) query.push((Object.hasKey(qs, 'prefix') ? qs.prefix : '') + qs2.join(' ' + qs.concat + ' ') + (Object.hasKey(qs, 'suffix') ? qs.suffix : ''))
       return query
     }
     // use parameter if it is also provided as a keyword
-    if (qs.hasKey('parameter') && kwargs.hasKey(qs.parameter)) {
+    if (Object.hasKey(qs, 'parameter') && Object.hasKey(kwargs, qs.parameter)) {
       let parameter = qs.parameter
-      if (qs.hasKey('removeParameterPrefix')) parameter = parameter.lstrip(qs.removeParameterPrefix)
-      if (qs.hasKey('removeParameterPostfix')) parameter = parameter.rstrip(qs.removeParameterPostfix)
-      if (qs.hasKey('startParameterLower') && qs.startParameterLower == true) parameter = parameter.lowerFirst()
-      const key = qs.hasKey('key') ? qs.key : qs.parameter
+      if (Object.hasKey(qs, 'removeParameterPrefix')) parameter = parameter.lstrip(qs.removeParameterPrefix)
+      if (Object.hasKey(qs, 'removeParameterPostfix')) parameter = parameter.rstrip(qs.removeParameterPostfix)
+      if (Object.hasKey(qs, 'startParameterLower') && qs.startParameterLower == true) parameter = parameter.lowerFirst()
+      const key = Object.hasKey(qs, 'key') ? qs.key : qs.parameter
       const value = JSON.stringify(kwargs[key])
       const not_value = kwargs[key] ? '' : '!'
       query.push(qs.query.replaceAll('{parameter}', parameter).replaceAll('{value}', value).replaceAll('{not_value}', not_value))
     }
     // use query if no parameter is included
-    else if (qs.hasKey('query') && !qs.hasKey('parameter')) query.push(...COPR.__buildSingleQueryArray(qs.query, kwargs))
+    else if (Object.hasKey(qs, 'query') && !Object.hasKey(qs, 'parameter')) query.push(...COPR.__buildSingleQueryArray(qs.query, kwargs))
     return query
   },
 
@@ -165,7 +165,7 @@ const COPR = {
     return COPR._query(COPR.__normalizeQuery(elementType.query, {class: elementType.name}), null, kwargs)
   },
   __baseFunction(resultDescription) {
-    if (resultDescription.resultType == 'dict') return resultDescription.query.mapValues(query => COPR._query(query))
+    if (resultDescription.resultType == 'dict') return Object.mapValues(resultDescription.query, query => COPR._query(query))
     else if (resultDescription.resultType == 'string') return COPR._query(resultDescription.query)
   },
 }
