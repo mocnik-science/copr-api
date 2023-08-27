@@ -52,6 +52,7 @@
           "prefix": "?",
           "concat": "&&",
           "query": [
+            {"parameter": "id", "macro": "==", "query": "representation.{parameter} == `{value}`"},
             {"parameter": "label", "macro": "contains", "query": "representation.{parameter} && contains(representation.{parameter}, `{value}`)"},
             {"parameter": "label_", "macro": "==", "query": "representation.{parameter} == `{value}`"},
             {"parameter": "description", "macro": "contains", "query": "representation.{parameter} && contains(representation.{parameter}, `{value}`)"},
