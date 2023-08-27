@@ -1,7 +1,7 @@
 {
   "name": "copr.js",
   "description": "Corpus of Place Representations (COPR) API",
-  "main": "src/copr.mjs",
+  "main": "src/copr.node.mjs",
   "targets": {
     "modern": {
       "context": "browser",
@@ -38,5 +38,8 @@
   },
   "dependencies": {
     "jmespath": "^0.16.0"
-  }
+  },
+  "files": [
+    "../common/scheme.json"
+  ]
 }
