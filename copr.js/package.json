@@ -39,7 +39,6 @@
     "parcel": "<2.9.0"
   },
   "dependencies": {
-    "copr.common": "workspace:^",
     "jmespath": "^0.16.0"
   },
   "packageManager": "yarn@3.6.3"
