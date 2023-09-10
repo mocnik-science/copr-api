@@ -1,14 +1,22 @@
 /** COMMON: JAVASCRIPT SPECIFIC **/
 
-String.prototype._lstrip = function(str) { return this.startsWith(str) ? this.slice(str.length) : this }
-String.prototype._rstrip = function(str) { return this.endsWith(str) ? this.slice(0, this.length - str.length) : this }
-String.prototype._capitalizeFirst = function() { return this.length > 0 ? this.charAt(0).toUpperCase() + this.slice(1) : '' }
-String.prototype._lowerFirst = function() { return this.length > 0 ? this.charAt(0).toLowerCase() + this.slice(1) : '' }
+const extend = (object, name, fn) => {
+  Object.defineProperty(object.prototype, name, {
+    value: fn,
+    enumerable: false,
+    configurable: true,
+  })
+}
+
+extend(String, '_lstrip', function(str) { return this.startsWith(str) ? this.slice(str.length) : this })
+extend(String, '_rstrip', function(str) { return this.endsWith(str) ? this.slice(0, this.length - str.length) : this })
+extend(String, '_capitalizeFirst', function() { return this.length > 0 ? this.charAt(0).toUpperCase() + this.slice(1) : '' })
+extend(String, '_lowerFirst', function() { return this.length > 0 ? this.charAt(0).toLowerCase() + this.slice(1) : '' })
 
 Object._hasKey = (o, key) => Object.keys(o).includes(key)
 Object._mapValues = (o, fn) => Object.fromEntries(Object.entries(o).map(([k, v], i) => [k, fn(v, k, i)]))
 
-Array.prototype._first = function() { return this.find(x => x !== undefined) }
+extend(Array, '_first', function() { return this.find(x => x !== undefined) })
 
 /** COPR CLASS **/
 
@@ -59,7 +67,7 @@ const COPR = {
         if (Object._hasKey(et, 'parameters')) currentClass._parameters = {...currentClass._parameters, ...et.parameters}
       }
       // JAVASCRIPT SPECIFIC: instead of COPR.Element.__getattr__(name)
-      for (const [parameter, query] of Object.entries(currentClass._parameters)) currentClass.prototype[parameter] = function() { return COPR._query(query, this._d) }
+      for (const [parameter, query] of Object.entries(currentClass._parameters)) extend(currentClass, parameter, function() { return COPR._query(query, this._d) })
     }
   },
 
