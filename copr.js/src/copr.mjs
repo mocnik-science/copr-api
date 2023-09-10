@@ -1,14 +1,14 @@
 /** COMMON: JAVASCRIPT SPECIFIC **/
 
-String.prototype.lstrip = function(str) { return this.startsWith(str) ? this.slice(str.length) : this }
-String.prototype.rstrip = function(str) { return this.endsWith(str) ? this.slice(0, this.length - str.length) : this }
-String.prototype.capitalizeFirst = function() { return this.length > 0 ? this.charAt(0).toUpperCase() + this.slice(1) : '' }
-String.prototype.lowerFirst = function() { return this.length > 0 ? this.charAt(0).toLowerCase() + this.slice(1) : '' }
+String.prototype._lstrip = function(str) { return this.startsWith(str) ? this.slice(str.length) : this }
+String.prototype._rstrip = function(str) { return this.endsWith(str) ? this.slice(0, this.length - str.length) : this }
+String.prototype._capitalizeFirst = function() { return this.length > 0 ? this.charAt(0).toUpperCase() + this.slice(1) : '' }
+String.prototype._lowerFirst = function() { return this.length > 0 ? this.charAt(0).toLowerCase() + this.slice(1) : '' }
 
-Object.hasKey = (o, key) => Object.keys(o).includes(key)
-Object.mapValues = (o, fn) => Object.fromEntries(Object.entries(o).map(([k, v], i) => [k, fn(v, k, i)]))
+Object._hasKey = (o, key) => Object.keys(o).includes(key)
+Object._mapValues = (o, fn) => Object.fromEntries(Object.entries(o).map(([k, v], i) => [k, fn(v, k, i)]))
 
-Array.prototype.first = function() { return this.find(x => x !== undefined) }
+Array.prototype._first = function() { return this.find(x => x !== undefined) }
 
 /** COPR CLASS **/
 
@@ -36,10 +36,10 @@ const COPR = {
     // init elements
     for (const elementType of COPR._scheme.elementTypes) {
       // init element functions
-      if (Object.hasKey(elementType, 'query')) COPR[Object.hasKey(elementType, 'functionName') ? elementType.functionName : elementType.name + 's'] = kwargs => COPR.__elements(elementType, kwargs)
+      if (Object._hasKey(elementType, 'query')) COPR[Object._hasKey(elementType, 'functionName') ? elementType.functionName : elementType.name + 's'] = kwargs => COPR.__elements(elementType, kwargs)
       // init element classes
       const classname = COPR._classnameForElement(elementType)
-      let baseclassname = Object.hasKey(elementType, 'baseclass') ? elementType.baseclass : 'element'
+      let baseclassname = Object._hasKey(elementType, 'baseclass') ? elementType.baseclass : 'element'
       COPR[classname] = {[classname]: class extends COPR._classForName(baseclassname) {
         // JAVASCRIPT SPECIFIC: instead of COPR.Element.constructor(d, info)
         constructor(d, info) {
@@ -54,9 +54,9 @@ const COPR = {
       while (baseclassname != 'element') {
         const ets = COPR._scheme.elementTypes.filter(et => et.name == baseclassname)
         if (ets.length == 0) break
-        const et = ets.first()
-        baseclassname = Object.hasKey(et, 'baseclass') ? et.baseclass : 'element'
-        if (Object.hasKey(et, 'parameters')) currentClass._parameters = {...currentClass._parameters, ...et.parameters}
+        const et = ets._first()
+        baseclassname = Object._hasKey(et, 'baseclass') ? et.baseclass : 'element'
+        if (Object._hasKey(et, 'parameters')) currentClass._parameters = {...currentClass._parameters, ...et.parameters}
       }
       // JAVASCRIPT SPECIFIC: instead of COPR.Element.__getattr__(name)
       for (const [parameter, query] of Object.entries(currentClass._parameters)) currentClass.prototype[parameter] = function() { return COPR._query(query, this._d) }
@@ -68,14 +68,14 @@ const COPR = {
   _classForElement: elementType => COPR[COPR._classnameForElement(elementType)],
   _classForName: name => COPR[COPR._classnameForName(name)],
   _classnameForElement: elementType => COPR._classnameForName(elementType.name),
-  _classnameForName: name => name.capitalizeFirst(),
+  _classnameForName: name => name._capitalizeFirst(),
 
   /** QUERYING **/
 
   _query(query, _d=null, kwargs={}) {
     // normalize list of queries
     query = COPR.__normalizeQuery(query)
-    const queries = Object.hasKey(query, 'queries') ? [...query.queries].reverse() : [query]
+    const queries = Object._hasKey(query, 'queries') ? [...query.queries].reverse() : [query]
     // loop through the queries
     let last = null
     let results = null
@@ -84,16 +84,16 @@ const COPR = {
       // build the query
       const compiledQuery = COPR.__buildSingleQuery(q, {__last: last}, kwargs)
       // execute the query
-      results = COPR._jmespath.search(_d && (!Object.hasKey(q, 'global') || !q.global) ? _d : COPR._data, compiledQuery)
+      results = COPR._jmespath.search(_d && (!Object._hasKey(q, 'global') || !q.global) ? _d : COPR._data, compiledQuery)
       last = results
     }
     // create corresponding objects if requested
     const packIntoObject = x => {
-      if (!(query instanceof Object && !(query instanceof String)) || !Object.hasKey(query, 'class')) return x
+      if (!(query instanceof Object && !(query instanceof String)) || !Object._hasKey(query, 'class')) return x
       let name = query.class
-      if (Object.hasKey(COPR._scheme.macros.classes, name)) name = COPR._scheme.macros.classes[name]
+      if (Object._hasKey(COPR._scheme.macros.classes, name)) name = COPR._scheme.macros.classes[name]
       if (name instanceof Object && !(name instanceof String)) {
-        if (!Object.hasKey(name, x.class)) return x
+        if (!Object._hasKey(name, x.class)) return x
         name = name[x.class]
       }
       return new (COPR._classForName(name))(x, COPR._info)
@@ -103,11 +103,11 @@ const COPR = {
   __validParametersForQuery(query) {
     const parameters = []
     // collect all valid parameters for the query
-    if (Object.hasKey(query, 'parameter')) parameters.push(query.parameter)
-    else if (Object.hasKey(query, 'query')) {
+    if (Object._hasKey(query, 'parameter')) parameters.push(query.parameter)
+    else if (Object._hasKey(query, 'query')) {
       if (query.query instanceof Array) for (const q of query.query) parameters.push(...COPR.__validParametersForQuery(q))
       else parameters.push(...COPR.__validParametersForQuery(query.query))
-    } else if (Object.hasKey(query, 'queries')) for (const q of query.queries) parameters.push(...COPR.__validParametersForQuery(q))
+    } else if (Object._hasKey(query, 'queries')) for (const q of query.queries) parameters.push(...COPR.__validParametersForQuery(q))
     return parameters
   },
   __normalizeQuery(query, extend={}) {
@@ -135,27 +135,27 @@ const COPR = {
       return query
     }
     // use macros in object
-    if (Object.hasKey(qs,'macro') && Object.hasKey(COPR._scheme.macros.queries, qs.macro))
+    if (Object._hasKey(qs,'macro') && Object._hasKey(COPR._scheme.macros.queries, qs.macro))
       qs = {...COPR._scheme.macros.queries[qs.macro], ...qs}
     // append object
-    if (Object.hasKey(qs, 'concat') && Object.hasKey(qs, 'query')) {
+    if (Object._hasKey(qs, 'concat') && Object._hasKey(qs, 'query')) {
       const qs2 = COPR.__buildSingleQueryArray(qs.query, kwargs)
-      if (qs2.length > 0) query.push((Object.hasKey(qs, 'prefix') ? qs.prefix : '') + qs2.join(' ' + qs.concat + ' ') + (Object.hasKey(qs, 'suffix') ? qs.suffix : ''))
+      if (qs2.length > 0) query.push((Object._hasKey(qs, 'prefix') ? qs.prefix : '') + qs2.join(' ' + qs.concat + ' ') + (Object._hasKey(qs, 'suffix') ? qs.suffix : ''))
       return query
     }
     // use parameter if it is also provided as a keyword
-    if (Object.hasKey(qs, 'parameter') && Object.hasKey(kwargs, qs.parameter)) {
+    if (Object._hasKey(qs, 'parameter') && Object._hasKey(kwargs, qs.parameter)) {
       let parameter = qs.parameter
-      if (Object.hasKey(qs, 'removeParameterPrefix')) parameter = parameter.lstrip(qs.removeParameterPrefix)
-      if (Object.hasKey(qs, 'removeParameterPostfix')) parameter = parameter.rstrip(qs.removeParameterPostfix)
-      if (Object.hasKey(qs, 'startParameterLower') && qs.startParameterLower == true) parameter = parameter.lowerFirst()
-      const key = Object.hasKey(qs, 'key') ? qs.key : qs.parameter
+      if (Object._hasKey(qs, 'removeParameterPrefix')) parameter = parameter._lstrip(qs.removeParameterPrefix)
+      if (Object._hasKey(qs, 'removeParameterPostfix')) parameter = parameter._rstrip(qs.removeParameterPostfix)
+      if (Object._hasKey(qs, 'startParameterLower') && qs.startParameterLower == true) parameter = parameter._lowerFirst()
+      const key = Object._hasKey(qs, 'key') ? qs.key : qs.parameter
       const value = JSON.stringify(kwargs[key])
       const not_value = kwargs[key] ? '' : '!'
       query.push(qs.query.replaceAll('{parameter}', parameter).replaceAll('{value}', value).replaceAll('{not_value}', not_value))
     }
     // use query if no parameter is included
-    else if (Object.hasKey(qs, 'query') && !Object.hasKey(qs, 'parameter')) query.push(...COPR.__buildSingleQueryArray(qs.query, kwargs))
+    else if (Object._hasKey(qs, 'query') && !Object._hasKey(qs, 'parameter')) query.push(...COPR.__buildSingleQueryArray(qs.query, kwargs))
     return query
   },
 
@@ -165,7 +165,7 @@ const COPR = {
     return COPR._query(COPR.__normalizeQuery(elementType.query, {class: elementType.name}), null, kwargs)
   },
   __baseFunction(resultDescription) {
-    if (resultDescription.resultType == 'dict') return Object.mapValues(resultDescription.query, query => COPR._query(query))
+    if (resultDescription.resultType == 'dict') return Object._mapValues(resultDescription.query, query => COPR._query(query))
     else if (resultDescription.resultType == 'string') return COPR._query(resultDescription.query)
   },
 }
