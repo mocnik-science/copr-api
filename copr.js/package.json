@@ -16,7 +16,7 @@
   },
   "scripts": {
     "build:node": ":",
-    "build:browser": "rm -rf ./dist && parcel build && printf '%s\n%s\n' '/**********************************************************/\n/* Corpus of Place Representations (COPR) API             */\n/* Copyright by Franz-Benjamin Mocnik, 2023               */\n/* Licensed under the CC BY-NC-ND 4.0                     */\n/**********************************************************/' \"$(cat ./dist/copr.min.js)\" > ./dist/copr.min.js",
+    "build:browser": "rm -rf ./dist && mkdir dist && parcel build && printf '%s\n%s\n' '/**********************************************************/\n/* Corpus of Place Representations (COPR) API             */\n/* Copyright by Franz-Benjamin Mocnik, 2023               */\n/* Licensed under the CC BY-NC-ND 4.0                     */\n/**********************************************************/' \"$(cat ./dist/copr.min.js)\" > ./dist/copr.min.js",
     "build": "run-s 'build:*'",
     "watch:node": ":",
     "watch:browser": "parcel watch",
