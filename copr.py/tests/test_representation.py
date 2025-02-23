@@ -21,7 +21,7 @@ def test_representationParameters():
     assert representation.label()
     assert representation.natural() != None
     assert representation.description()
-    assert representation.assets()
+    assert representation.entities()
     assert representation.places()
 
 def test_representationReferencesClass():
@@ -32,16 +32,16 @@ def test_representationReferencesClass():
 def test_representationReferencesDetails():
   for representation in COPR.representations():
     for reference in representation.references():
-      assert reference.representamen()
-      assert reference.representamen().label()
-      assert reference.aspectOfRepresentamen()
-      assert reference.aspectOfRepresentamen().id()
-      assert reference.aspectOfRepresentamen().qualities()
-      for quality in reference.aspectOfRepresentamen().qualities():
+      assert reference.representans()
+      assert reference.representans().label()
+      assert reference.aspectOfRepresentans()
+      assert reference.aspectOfRepresentans().id()
+      assert reference.aspectOfRepresentans().qualities()
+      for quality in reference.aspectOfRepresentans().qualities():
         assert isinstance(quality, COPRQuality)
         assert quality.kind()
         assert quality.canBeDescribedAs()
-      for comparator in reference.aspectOfRepresentamen().comparators():
+      for comparator in reference.aspectOfRepresentans().comparators():
         assert isinstance(comparator, COPRComparator)
         if isinstance(comparator, COPRIndividualComparator):
           assert comparator.selection().x()
@@ -49,11 +49,11 @@ def test_representationReferencesDetails():
           assert len(comparator.includesSelections()) > 0
           assert comparator.id()
           assert comparator.hasRelevantArrangementOfComparators() != None
-        assert comparator.object()
-        assert comparator.object().label()
+        assert comparator.thing()
+        assert comparator.thing().label()
       assert reference.typeOfReference()
-      assert reference.representantum()
-      assert reference.representantum().label()
-      assert reference.aspectOfRepresentantum()
-      assert reference.aspectOfRepresentantum().id()
+      assert reference.representandum()
+      assert reference.representandum().label()
+      assert reference.aspectOfRepresentandum()
+      assert reference.aspectOfRepresentandum().id()
     assert representation.literature()

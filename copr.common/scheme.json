@@ -13,7 +13,7 @@
       "resultType": "dict",
       "query": {
         "number of representations": "length(*)",
-        "number of objects": "length(*.objects[])"
+        "number of things": "length(*.things[])"
       }
     },
     "apiVersion": {
@@ -23,7 +23,7 @@
   },
   "macros": {
     "classes": {
-      "assetOrPlace": {"repr:asset": "asset", "repr:place": "place"},
+      "entityOrPlace": {"repr:entity": "entity", "place:place": "place"},
       "someComparator": {"repr:individualComparator": "individualComparator", "repr:collectionComparator": "collectionComparator", "repr:holisticComparator": "holisticComparator"}
     },
     "queries": {
@@ -41,8 +41,8 @@
         "label": "representation.label",
         "natural": "representation.natural",
         "description": "representation.description",
-        "assets": {"query": "objects[?class == 'repr:asset']", "class": "asset"},
-        "places": {"query": "objects[?class == 'repr:place']", "class": "place"},
+        "entities": {"query": "things[?class == 'repr:entity']", "class": "entity"},
+        "places": {"query": "things[?class == 'place:place']", "class": "place"},
         "references": {"query": "references", "class": "reference"},
         "literature": {"query": "literature", "class": "literature"}
       },
@@ -63,7 +63,7 @@
       ]
     },
     {
-      "name": "object",
+      "name": "thing",
       "parameters": {
         "id": "id",
         "label": "label",
@@ -75,15 +75,15 @@
     },
     {
       "name": "place",
-      "baseclass": "object",
+      "baseclass": "thing",
       "parameters": {},
       "query": [
-        "*.objects[",
+        "*.things[",
         {
           "prefix": "?",
           "concat": "&&",
           "query": [
-            "class == 'repr:place'",
+            "class == 'place:place'",
             {"parameter": "label", "macro": "contains"},
             {"parameter": "label_", "macro": "=="},
             {"parameter": "description", "macro": "contains"},
@@ -94,26 +94,26 @@
       ]
     },
     {
-      "name": "asset",
-      "baseclass": "object",
+      "name": "entity",
+      "baseclass": "thing",
       "parameters": {
-        "assetKind": "assetKind",
+        "entityKind": "entityKind",
         "manifestationKind": "manifestationKind.label",
         "representationKind": "representationKind.label",
         "unique": "unique",
         "weight": "weight"
       },
       "query": [
-        "*.objects[",
+        "*.things[",
         {
           "prefix": "?",
           "concat": "&&",
           "query": [
-            "class == 'repr:asset'",
+            "class == 'repr:entity'",
             {"parameter": "label", "macro": "contains"},
             {"parameter": "label_", "macro": "=="},
             {"parameter": "description", "macro": "contains"},
-            {"parameter": "assetKind", "macro": "=="},
+            {"parameter": "entityKind", "macro": "=="},
             {"parameter": "manifestationKind", "macro": "=="},
             {"parameter": "representationKind", "macro": "=="},
             {"parameter": "unique", "macro": "=="},
@@ -138,7 +138,7 @@
         "x": "x",
         "y": "y",
         "label": "label",
-        "file": {"queries": ["filename", {"query": "*.objects[].files[?filename == `{__last}`][] | [0]", "global": true}], "class": "file"}
+        "file": {"queries": ["filename", {"query": "*.things[].files[?filename == `{__last}`][] | [0]", "global": true}], "class": "file"}
       }
     },
     {
@@ -149,7 +149,7 @@
         "comparators": {"query": "comparators", "class": "someComparator"}
       },
       "query": [
-        "*.objects[].aspects[",
+        "*.things[].aspects[",
         {
           "prefix": "?",
           "concat": "&&",
@@ -175,14 +175,14 @@
       "name": "comparator",
       "parameters": {
         "id": "id",
-        "object": {"queries": ["id", {"query": "*.objects[?aspects[?comparators[?id == `{__last}`]]] | [0][0]", "global": true}], "class": "selection"}
+        "thing": {"queries": ["id", {"query": "*.things[?aspects[?comparators[?id == `{__last}`]]] | [0][0]", "global": true}], "class": "selection"}
       }
     },
     {
       "name": "individualComparator",
       "baseclass": "comparator",
       "parameters": {
-        "selection": {"queries": ["id", {"query": "*.objects[].selections[?id == `{__last}`][] | [0]", "global": true}], "class": "selection"}
+        "selection": {"queries": ["id", {"query": "*.things[].selections[?id == `{__last}`][] | [0]", "global": true}], "class": "selection"}
       }
     },
     {
@@ -192,7 +192,7 @@
         "hasRelevantNumberOfComparators": "hasRelevantNumberOfComparators",
         "hasRelevantArrangementOfComparators": "hasRelevantArrangementOfComparators",
         "hasRelevantInterplayOfComparators": "hasRelevantInterplayOfComparators",
-        "includesSelections": {"queries": ["includesSelections", {"query": "*.objects[].selections[?contains(`{__last}`, id)][]", "global": true}], "class": "selection"}
+        "includesSelections": {"queries": ["includesSelections", {"query": "*.things[].selections[?contains(`{__last}`, id)][]", "global": true}], "class": "selection"}
       }
     },
     {
@@ -203,11 +203,11 @@
     {
       "name": "reference",
       "parameters": {
-        "representamen": {"queries": ["representamen", {"query": "*.objects[?id == `{__last}`][] | [0]", "global": true}], "class": "assetOrPlace"},
-        "aspectOfRepresentamen": {"queries": ["aspectOfRepresentamen", {"query": "*.objects[].aspects[?id == `{__last}`][] | [0]", "global": true}], "class": "aspect"},
+        "representans": {"queries": ["representans", {"query": "*.things[?id == `{__last}`][] | [0]", "global": true}], "class": "entityOrPlace"},
+        "aspectOfRepresentans": {"queries": ["aspectOfRepresentans", {"query": "*.things[].aspects[?id == `{__last}`][] | [0]", "global": true}], "class": "aspect"},
         "typeOfReference": "typeOfReference",
-        "representantum": {"queries": ["representantum", {"query": "*.objects[?id == `{__last}`][] | [0]", "global": true}], "class": "assetOrPlace"},
-        "aspectOfRepresentantum": {"queries": ["aspectOfRepresentantum", {"query": "*.objects[].aspects[?id == `{__last}`][] | [0]", "global": true}], "class": "aspect"}
+        "representandum": {"queries": ["representandum", {"query": "*.things[?id == `{__last}`][] | [0]", "global": true}], "class": "entityOrPlace"},
+        "aspectOfRepresentandum": {"queries": ["aspectOfRepresentandum", {"query": "*.things[].aspects[?id == `{__last}`][] | [0]", "global": true}], "class": "aspect"}
       },
       "query": [
         "*.references[",
