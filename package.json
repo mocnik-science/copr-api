@@ -10,7 +10,9 @@
     "test:js": "cd copr.js && yarn test",
     "test:py": "cd copr.py && yarn test",
     "test": "run-s 'test:*'",
-    "clean": "rm -rf .yarn .parcel-cache/ .pnp.* yarn.lock"
+    "clean:js": "cd copr.js && yarn clean",
+    "clean:py": "cd copr.py && yarn clean",
+    "clean": "run-s 'clean:*' && rm -rf .yarn node_modules .parcel-cache '.pnp.*' yarn.lock && yarn set version stable"
   },
   "author": "Franz-Benjamin Mocnik <mail@mocnik-science.net>",
   "license": "CC-BY-NC-ND-4.0",
@@ -27,5 +29,5 @@
     "copr.js",
     "copr.py"
   ],
-  "packageManager": "yarn@3.6.3"
+  "packageManager": "yarn@4.6.0"
 }

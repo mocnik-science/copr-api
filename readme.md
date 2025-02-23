@@ -21,7 +21,7 @@ The commands `install`, `build`, `watch`, `test`, and possibly some further ones
 
 To install and build the library, you will need [Node.js](https://nodejs.org) and [Yarn](https://yarnpkg.com).  Then, run
 ```bash
-cd javascript
+cd copr.js
 yarn install
 yarn build # build for production
 yarn watch # build for development
@@ -31,7 +31,7 @@ yarn watch # build for development
 
 To install the package, you will need [Python3](https://www.python.org) and [pip](https://pip.pypa.io).  Then, run
 ```bash
-cd python
+cd copr.py
 pip3 install . # install for production
 pip3 install -e . # install for development
 pip3 install copr # install from PyPI
