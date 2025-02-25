@@ -16,13 +16,13 @@
   },
   "scripts": {
     "build:node": ":",
-    "build:browser": "yarn clean && parcel build && printf '%s\n%s\n' '/**********************************************************/\n/* Corpus of Place Representations (COPR) API             */\n/* Copyright by Franz-Benjamin Mocnik, 2023–2025          */\n/* Licensed under the CC BY-NC-ND 4.0                     */\n/**********************************************************/' \"$(cat ./dist/copr.min.js)\" > ./dist/copr.min.js",
+    "build:browser": "yarn clean && parcel build && printf '%s\n%s\n' '/**********************************************************/\n/* Corpus of Place Representations (COPR) API             */\n/* Copyright by Franz-Benjamin Mocnik, 2023-2025          */\n/* Licensed under the CC BY-NC-ND 4.0                     */\n/**********************************************************/' \"$(cat ./dist/copr.min.js)\" > ./dist/copr.min.js",
     "build": "run-s 'build:*'",
     "watch:node": ":",
     "watch:browser": "parcel watch",
     "watch": "run-p 'watch:*'",
-    "test:node": "mocha",
-    "test:browser": "open -a safari ./test/test.html",
+    "test:node": "mocha --extension mjs",
+    "test:browser": "ln -s ../dist/copr.min.js test/copr.min.js && ln -s ../dist/copr.min.js.map test/copr.min.js.map && http-server ./test -o && rm -rf test/copr.min.js test/copr.min.js.map",
     "test": "run-s 'test:*'",
     "clean": "rm -rf ./dist"
   },
@@ -35,6 +35,7 @@
   "homepage": "https://purl.archive.org/copr",
   "devDependencies": {
     "chai": "^5.2.0",
+    "http-server": "^14.1.1",
     "mocha": "^11.1.0",
     "npm-run-all": "^4.1.5",
     "parcel": "^2.13.3"

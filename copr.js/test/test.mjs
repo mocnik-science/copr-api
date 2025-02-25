@@ -1,5 +1,16 @@
-let COPR = typeof window !== 'undefined' ? window.COPR : (await import('../src/copr.node.mjs')).default
-let chai = typeof window !== 'undefined' ? window.chai : (await import('chai')).default
+const loadLibraryScriptTag = async (url, pkg) => new Promise((resolve, reject) => {
+  const script = document.createElement('script')
+  script.src = url
+  script.type = 'module'
+  script.onload = () => resolve(window.chai)
+  script.onerror = () => reject(null)
+  document.head.appendChild(script)  
+})
+const loadLibraryImport = async pkg => await import(pkg)
+const loadLibrary = async (url, globalName, pkg, fPkg) => (typeof window === 'undefined') ? (fPkg ? fPkg : (x => x))(await loadLibraryImport(pkg)) : (!globalName) ? await loadLibraryScriptTag(url) : window[globalName]
+
+const chai = await loadLibrary('https://www.chaijs.com/chai.js', null, 'chai')
+const COPR = await loadLibrary(null, 'COPR', '../src/copr.node.mjs', x => x.default)
 
 chai.should()
 

@@ -1,6 +1,6 @@
 import COPR from './copr.mjs'
 import * as jmespath from  'jmespath'
-import scheme from 'copr.common/scheme.json' assert {type: 'json'}
+import scheme from 'copr.common/scheme.json' with {type: 'json'}
 
 /** INITIALIZE **/
 

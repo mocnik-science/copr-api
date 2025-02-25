@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <link rel="stylesheet" href="https://unpkg.com/mocha/mocha.css"/>
+  </head>
+  <body>
+    <div style="font: 14px/1.5 'Helvetica Neue', Helvetica, Arial, sans-serif; font-style: italic; margin : 60px 50px 0">Open the Javascript Console to show the output.</div>
+    <h1 style="font: 20px/1.5 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 30px 50px 0">Tests</h1>
+    <div id="mocha" style="margin-top: 0"></div>
+    <script src="https://unpkg.com/jmespath@latest/artifacts/jmespath.min.js"></script>
+    <script src="copr.min.js"></script>
+    <script src="https://unpkg.com/mocha/mocha.js"></script>
+    <script class="mocha-init">
+      mocha.setup('bdd')
+      mocha.checkLeaks()
+    </script>
+    <script class="mocha-exec" type="module">
+      import '/test.mjs'
+      mocha.run()
+    </script>
+    <script>
+      console.log(COPR.apiVersion())
+      console.log(COPR.dataset())
+      console.log(COPR.stats())
+
+      // for (const representation of COPR.representations()) {
+      for (const representation of COPR.representations({label: 'London'})) {
+        // console.log('===')
+        // console.log(representation)
+        // console.log(representation.howToCite())
+        // console.log(representation.label())
+        // console.log(representation.natural())
+        // console.log(representation.description())
+        // console.log(representation.entities())
+        // console.log(representation.places())
+        // console.log(representation.references())
+        // console.log(representation.references()[0].representans())
+        // console.log(representation.references()[0].representans().label())
+        // console.log('==')
+        // console.log(representation.references()[0].aspectOfRepresentans())
+        // console.log(representation.references()[0].aspectOfRepresentans().id())
+        // console.log(representation.references()[0].aspectOfRepresentans().qualities())
+        // console.log(representation.references()[0].aspectOfRepresentans().qualities()[0].kind())
+        // console.log(representation.references()[0].aspectOfRepresentans().qualities()[0].canBeDescribedAs())
+        // console.log(representation.references()[0].aspectOfRepresentans().comparators())
+        // console.log(representation.references()[0].aspectOfRepresentans().comparators()[0])
+        // console.log(representation.references()[0].aspectOfRepresentans().comparators()[0].selection().x())
+        // console.log(representation.references()[0].aspectOfRepresentans().comparators()[2])
+        // console.log(representation.references()[0].aspectOfRepresentans().comparators()[2].includesSelections()[1].x())
+        // console.log(representation.references()[0].aspectOfRepresentans().comparators()[2].hasRelevantArrangementOfComparators())
+        // console.log(representation.references()[0].aspectOfRepresentans().comparators()[2].id())
+        // console.log(representation.references()[0].aspectOfRepresentans().comparators()[2].thing())
+        // console.log(representation.references()[0].aspectOfRepresentans().comparators()[2].thing().label())
+        // console.log('==')
+        // console.log(representation.references()[0].typeOfReference())
+        // console.log(representation.references()[0].representandum())
+        // console.log(representation.references()[0].representandum().label())
+        // console.log(representation.references()[0].aspectOfRepresentandum())
+        // console.log(representation.references()[0].aspectOfRepresentandum().id())
+        // console.log(representation.literature())
+      }
+
+      // // for (const entity of COPR.entities({label_: 'key hanger of the Tower Bridge'})) {
+      // for (const entity of COPR.entities({label: 'Tower Bridge', unique: false, hasFiles: true})) {
+      //   console.log('===')
+      //   console.log(entity.howToCite())
+      //   console.log(entity.id())
+      //   console.log(entity.label())
+      //   console.log(entity.description())
+      //   console.log(entity.manifestationKind())
+      //   console.log(entity.unique())
+      //   console.log(entity.files())
+      //   console.log(entity.files()[0].filename())
+      //   console.log(entity.files()[0].isTheFile())
+      //   console.log(entity.selections()[0].x())
+      //   console.log(entity.selections()[0].file().filename())
+      //   console.log(entity.selections()[0].file().isTheFile())
+      // }
+
+      // for (const aspect of COPR.aspects({qualityKind: 'colour'})) {
+      //   console.log('===')
+      //   console.log(aspect.id())
+      // }
+      // for (const aspect of COPR.aspects({qualityCanBeDescribedAs: 'bitter'})) {
+      //   console.log('===')
+      //   console.log(aspect.id())
+      // }
+      // for (const aspect of COPR.aspects({qualityCanBeDescribedAs_: 'bitter taste'})) {
+      //   console.log('===')
+      //   console.log(aspect.id())
+      // }
+
+      // for (const literature of COPR.literature({author: 'Mocnik'})) {
+      //   console.log('===')
+      //   console.log(literature.author())
+      //   console.log(literature.title())
+      // }
+    </script>
+  </body>
+</html>
