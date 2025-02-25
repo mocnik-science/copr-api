@@ -24,6 +24,7 @@
   "macros": {
     "classes": {
       "entityOrPlace": {"repr:entity": "entity", "place:place": "place"},
+      "aspectOrEntityOrPlace": {"repr:aspect": "aspect", "repr:entity": "entity", "place:place": "place"},
       "someComparator": {"repr:individualComparator": "individualComparator", "repr:collectionComparator": "collectionComparator", "repr:holisticComparator": "holisticComparator"}
     },
     "queries": {
@@ -34,13 +35,41 @@
   },
   "elementTypes": [
     {
+      "name": "idLabel",
+      "parameters": {
+        "id": "id",
+        "label": "label"
+      }
+    },
+    {
+      "name": "idClassLabel",
+      "parameters": {
+        "id": "id",
+        "class": "class",
+        "label": "label"
+      }
+    },
+    {
+      "name": "person",
+      "parameters": {
+        "surname": "surname",
+        "givenName": "givenName",
+        "name": "name"
+      }
+    },
+    {
       "name": "representation",
       "parameters": {
         "id": "representation.id",
-        "version": "representation.version",
         "label": "representation.label",
-        "natural": "representation.natural",
         "description": "representation.description",
+        "version": "representation.versionInfo.version",
+        "timestamp": "representation.versionInfo.timestamp",
+        "authors": {"query": "representation.versionInfo.authors", "class": "person"},
+        "reviewers": {"query": "representation.versionInfo.reviewers", "class": "person"},
+        "doi": "representation.zenodo.doi",
+        "users": {"query": "representation.users", "class": "user"},
+        "sources": {"query": "representation.sources", "class": "sources"},
         "entities": {"query": "things[?class == 'repr:entity']", "class": "entity"},
         "places": {"query": "things[?class == 'place:place']", "class": "place"},
         "references": {"query": "references", "class": "reference"},
@@ -55,12 +84,36 @@
             {"parameter": "id", "macro": "==", "query": "representation.{parameter} == `{value}`"},
             {"parameter": "label", "macro": "contains", "query": "representation.{parameter} && contains(representation.{parameter}, `{value}`)"},
             {"parameter": "label_", "macro": "==", "query": "representation.{parameter} == `{value}`"},
-            {"parameter": "description", "macro": "contains", "query": "representation.{parameter} && contains(representation.{parameter}, `{value}`)"},
-            {"parameter": "natural", "macro": "==", "query": "representation.{parameter} == `{value}`"}
+            {"parameter": "description", "macro": "contains", "query": "representation.{parameter} && contains(representation.{parameter}, `{value}`)"}
           ]
         },
         "]"
       ]
+    },
+    {
+      "name": "user",
+      "parameters": {
+        "particularPeople": "particularPeople",
+        "particularPeople_people": {"query": "particularPeoplePeople || ''", "class": "person"},
+        "generallyUsed": "generallyUsed"
+      }
+    },
+    {
+      "name": "sources",
+      "parameters": {
+        "ownUsage": "ownUsage",
+        "ownUsage_users": {"query": "ownUsageUsers || ''", "class": "person"},
+        "observation": "observation",
+        "interviewsWithUsers": "interviewsWithUsers",
+        "interviewsWithUsers_interviewees": {"query": "interviewsWithUsersInterviewees || ''", "class": "person"},
+        "interviewsWithExperts": "interviewsWithExperts",
+        "interviewsWithExperts_interviewees": {"query": "interviewsWithExpertsInterviewees || ''", "class": "person"},
+        "scientificLiterature": "scientificLiterature",
+        "nonScientificLiterature": "nonScientificLiterature",
+        "commonKnowledge": "commonKnowledge",
+        "other": "other",
+        "other_source": {"query": "otherSource || ''", "class": "person"}
+      }
     },
     {
       "name": "thing",
@@ -68,40 +121,25 @@
         "id": "id",
         "label": "label",
         "description": "description",
+        "createdThroughProcessOfKind": {"query": "createdThroughProcessOfKind", "class": "idLabel"},
+        "madeAccessibleThroughProcessOfKind": {"query": "madeAccessibleThroughProcessOfKind", "class": "idLabel"},
+        "createdAndMadeAccessibleThroughProcess": "createdAndMadeAccessibleThroughProcess",
+        "location": {"query": "location", "class": "location"},
         "files": {"query": "files", "class": "file"},
         "selections": {"query": "selections", "class": "selection"},
         "aspects": {"query": "aspects", "class": "aspect"}
       }
     },
     {
-      "name": "place",
-      "baseclass": "thing",
-      "parameters": {},
-      "query": [
-        "*.things[",
-        {
-          "prefix": "?",
-          "concat": "&&",
-          "query": [
-            "class == 'place:place'",
-            {"parameter": "label", "macro": "contains"},
-            {"parameter": "label_", "macro": "=="},
-            {"parameter": "description", "macro": "contains"},
-            {"parameter": "hasFiles", "macro": "has"}
-          ]
-        },
-        "][]"
-      ]
-    },
-    {
       "name": "entity",
       "baseclass": "thing",
       "parameters": {
         "entityKind": "entityKind",
-        "manifestationKind": "manifestationKind.label",
-        "representationKind": "representationKind.label",
+        "manifestationKind": {"query": "manifestationKind", "class": "idLabel"},
+        "mediaKind": {"query": "mediaKind", "class": "idClassLabel"},
         "unique": "unique",
-        "weight": "weight"
+        "weight": "weight",
+        "size": "size"
       },
       "query": [
         "*.things[",
@@ -115,9 +153,10 @@
             {"parameter": "description", "macro": "contains"},
             {"parameter": "entityKind", "macro": "=="},
             {"parameter": "manifestationKind", "macro": "=="},
-            {"parameter": "representationKind", "macro": "=="},
+            {"parameter": "mediaKind", "macro": "=="},
             {"parameter": "unique", "macro": "=="},
-            {"parameter": "hasWeight", "macro": "has"},
+            {"parameter": "weight", "macro": "has"},
+            {"parameter": "size", "macro": "has"},
             {"parameter": "hasFiles", "macro": "has"}
           ]
         },
@@ -125,19 +164,70 @@
       ]
     },
     {
+      "name": "place",
+      "baseclass": "thing",
+      "parameters": {
+        "sharednessKind": {"query": "sharednessKind", "class": "idLabel"},
+        "experienceByTheRepresentationUser": {"query": "experienceByTheRepresentationUser", "class": "idLabel"},
+        "withinCulture": "withinCulture",
+        "withinTimePeriod": "withinTimePeriod"
+      },
+      "query": [
+        "*.things[",
+        {
+          "prefix": "?",
+          "concat": "&&",
+          "query": [
+            "class == 'place:place'",
+            {"parameter": "label", "macro": "contains"},
+            {"parameter": "label_", "macro": "=="},
+            {"parameter": "description", "macro": "contains"},
+            {"parameter": "sharednessKind", "macro": "=="},
+            {"parameter": "experienceByTheRepresentationUser", "macro": "=="},
+            {"parameter": "withinCulture", "macro": "contains"},
+            {"parameter": "withinTimePeriod", "macro": "contains"},
+            {"parameter": "hasFiles", "macro": "has"}
+          ]
+        },
+        "][]"
+      ]
+    },
+    {
+      "name": "location",
+      "parameters": {
+        "lat": "lat",
+        "lon": "lon",
+        "locationAnonymization": {"query": "locationAnonymization", "class": "idLabel"}
+      }
+    },
+    {
       "name": "file",
       "parameters": {
         "filename": "filename",
-        "isTheFile": "isTheFile"
+        "fileRelation": {"query": "fileRelation", "class": "idLabel"},
+        "copyrightStatements": {"query": "copyrightStatements", "class": "copyrightStatement"}
+      }
+    },
+    {
+      "name": "copyrightStatement",
+      "parameters": {
+        "copyrightType": {"query": "copyrightType", "class": "idLabel"},
+        "copyrightHolder": {"query": "copyrightHolderOrSource", "class": "person"},
+        "copyrightSource": {"query": "copyrightHolderOrSource", "class": "person"},
+        "copyrightLicense": {"query": "copyrightLicense", "class": "idLabel"}
       }
     },
     {
       "name": "selection",
       "parameters": {
         "id": "id",
+        "label": "label",
         "x": "x",
         "y": "y",
-        "label": "label",
+        "startTime": "startTime",
+        "endTime": "endTime",
+        "startOffset": "startOffset",
+        "endOffset": "endOffset",
         "file": {"queries": ["filename", {"query": "*.things[].files[?filename == `{__last}`][] | [0]", "global": true}], "class": "file"}
       }
     },
@@ -167,7 +257,7 @@
     {
       "name": "quality",
       "parameters": {
-        "kind": "qualityKind.label",
+        "kind": {"query": "qualityKind", "class": "idClassLabel"},
         "canBeDescribedAs": "qualityCanBeDescribedAs"
       }
     },
@@ -203,11 +293,12 @@
     {
       "name": "reference",
       "parameters": {
-        "representans": {"queries": ["representans", {"query": "*.things[?id == `{__last}`][] | [0]", "global": true}], "class": "entityOrPlace"},
-        "aspectOfRepresentans": {"queries": ["aspectOfRepresentans", {"query": "*.things[].aspects[?id == `{__last}`][] | [0]", "global": true}], "class": "aspect"},
-        "typeOfReference": "typeOfReference",
-        "representandum": {"queries": ["representandum", {"query": "*.things[?id == `{__last}`][] | [0]", "global": true}], "class": "entityOrPlace"},
-        "aspectOfRepresentandum": {"queries": ["aspectOfRepresentandum", {"query": "*.things[].aspects[?id == `{__last}`][] | [0]", "global": true}], "class": "aspect"}
+        "subject": {"queries": ["subject", {"query": "*.things[].aspects[?id == `{__last}`][] | *.things[?id == `{__last}`][] | [0]", "global": true}], "class": "aspectOrEntityOrPlace"},
+        "typeOfReference": {"query": "typeOfReference", "class": "idLabel"},
+        "object": {"queries": ["object", {"query": "*.things[].aspects[?id == `{__last}`][] | *.things[?id == `{__last}`][] | [0]", "global": true}], "class": "aspectOrEntityOrPlace"},
+        "createdThroughProcessOfKind": {"query": "createdThroughProcessOfKind", "class": "idLabel"},
+        "independentRelevance": "independentRelevance",
+        "withinTheNotationalSystem": "withinTheNotationalSystem"
       },
       "query": [
         "*.references[",
