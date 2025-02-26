@@ -1,4 +1,6 @@
 /copr.js/dist
+/copr.js/test/copr.min.js
+/copr.js/test/copr.min.js.map
 /copr.py/MANIFEST
 /copr.py/**/__pycache__
 /copr.py/build
