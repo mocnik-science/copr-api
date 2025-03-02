@@ -1,26 +1,26 @@
 {
-  "name": "copr",
+  "name": "copr-api",
+  "description": "Corpus of Place Representations (COPR) | copr-api",
+  "private": true,
   "version": "0.0.1",
-  "description": "Corpus of Place Representations (COPR) API",
-  "main": "",
-  "scripts": {
-    "build:js": "cd copr.js && yarn build",
-    "build:py": "cd copr.py && yarn build",
-    "build": "run-s 'build:*'",
-    "test:js": "cd copr.js && yarn test",
-    "test:py": "cd copr.py && yarn test",
-    "test": "run-s 'test:*'",
-    "clean:js": "cd copr.js && yarn clean",
-    "clean:py": "cd copr.py && yarn clean",
-    "clean": "run-s 'clean:*' && rm -rf .yarn node_modules .parcel-cache '.pnp.*' yarn.lock && yarn set version stable"
-  },
-  "author": "Franz-Benjamin Mocnik <mail@mocnik-science.net>",
-  "license": "CC-BY-NC-ND-4.0",
+  "author": "Franz-Benjamin Mocnik",
+  "license": "CC-BY-SA-4.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mocnik-science/copr-api.git"
+    "url": "git+https://gitea.franz-benjamin.net/copr/copr-api.git"
   },
-  "homepage": "https://purl.archive.org/copr",
+  "scripts": {
+    "orchestrate": "REPO_PATH=$(pwd) && cd .copr/copr-orchestrate && yarn build",
+    "build": "yarn run orchestrate && run-p 'build:*'",
+    "build:js": "cd copr.js && yarn build",
+    "build:py": "cd copr.py && yarn build",
+    "test": "run-s 'test:*'",
+    "test:js": "cd copr.js && yarn test",
+    "test:py": "cd copr.py && yarn test",
+    "clean": "run-s 'clean:*' && rm -rf .yarn node_modules .parcel-cache '.pnp.*' yarn.lock && yarn set version stable",
+    "clean:js": "cd copr.js && yarn clean",
+    "clean:py": "cd copr.py && yarn clean"
+  },
   "devDependencies": {
     "npm-run-all": "^4.1.5"
   },

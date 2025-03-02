@@ -3,10 +3,12 @@ import json
 
 with open('../package.json') as file:
   pkg = json.load(file)
+with open('../.copr/copr-orchestrate/dist/info.json') as file:
+  info = json.load(file)
 
-pkgName=pkg['name']
-pkgVersion=pkg['version']
-pkgUrl='https://github.com/mocnik-science/copr-api'
+pkgName=info['copr']['nameAndAcronym']
+pkgVersion=info['copr']['version']
+pkgUrl=pkg['repository']['url'].removeprefix('git+').removesuffix('.git')
 
 with open('./copr/__info__.py', 'w') as f:
   f.write('pkgName = \'%s\'\n' % pkgName)
@@ -27,10 +29,16 @@ setuptools.setup(
     ],
   },
   version=pkgVersion,
-  author='Franz-Benjamin Mocnik',
-  author_email='mail@mocnik-science.net',
-  license='CC-BY-NC-ND-4.0',
+  author=info['software']['authorsLong'],
+  author_email=info['software']['authorsEmail'],
+  description='A library to access the ' + info['copr']['nameAndAcronym'],
+  long_description='file: README.md',
+  long_description_content_type='text/markdown',
+  license=info['software']['license'].replace(' ', '-'),
   url=pkgUrl,
-  download_url='',
-  keywords=['place', 'representation', 'corpus'],
+  keywords=info['copr']['keywords'],
+  classifiers=[
+    'Development Status :: 5 - Production/Stable',
+    'Programming Language :: Python :: 3',
+  ],
 )

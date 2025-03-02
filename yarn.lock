@@ -1614,6 +1614,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"copr-api@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "copr-api@workspace:."
+  dependencies:
+    npm-run-all: "npm:^4.1.5"
+  languageName: unknown
+  linkType: soft
+
 "copr.common@workspace:copr.common":
   version: 0.0.0-use.local
   resolution: "copr.common@workspace:copr.common"
@@ -1636,14 +1644,6 @@ __metadata:
 "copr.py@workspace:copr.py":
   version: 0.0.0-use.local
   resolution: "copr.py@workspace:copr.py"
-  languageName: unknown
-  linkType: soft
-
-"copr@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "copr@workspace:."
-  dependencies:
-    npm-run-all: "npm:^4.1.5"
   languageName: unknown
   linkType: soft
 

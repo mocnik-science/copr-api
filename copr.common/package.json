@@ -1,11 +1,12 @@
 {
   "name": "copr.common",
-  "description": "Corpus of Place Representations (COPR) API",
-  "author": "Franz-Benjamin Mocnik <mail@mocnik-science.net>",
-  "license": "CC-BY-NC-ND-4.0",
+  "description": "Corpus of Place Representations (COPR) | copr-api > copr.common",
+  "private": true,
+  "version": "0.0.1",
+  "author": "Franz-Benjamin Mocnik",
+  "license": "CC-BY-SA-4.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mocnik-science/copr-api.git"
-  },
-  "homepage": "https://purl.archive.org/copr"
+    "url": "git+https://gitea.franz-benjamin.net/copr/copr-api.git"
+  }
 }
