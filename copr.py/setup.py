@@ -5,6 +5,8 @@ with open('../package.json') as file:
   pkg = json.load(file)
 with open('../.copr/copr-orchestrate/dist/info.json') as file:
   info = json.load(file)
+with open('./readme.md') as file:
+  readme = file.read()
 
 pkgName=info['copr']['nameAndAcronym']
 pkgVersion=info['copr']['version']
@@ -35,7 +37,7 @@ setuptools.setup(
   author=info['software']['authorsLong'],
   author_email=info['software']['authorsEmail'],
   description='A library to access the ' + info['copr']['nameAndAcronym'],
-  long_description='file: README.md',
+  long_description=readme,
   long_description_content_type='text/markdown',
   license=info['software']['license'].replace(' ', '-'),
   url=pkgUrl,
