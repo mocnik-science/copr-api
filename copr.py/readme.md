@@ -12,6 +12,13 @@ To install the library, you will need [Python3](https://www.python.org) and [pip
 ```bash
 pip3 install copr-py
 ```
+## Publishing
+You can publish the library by executing the following steps:
+```bash
+cd copr.py
+yarn install:publish
+yarn publish
+```
 
 ## Usage
 

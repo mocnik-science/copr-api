@@ -1,6 +1,7 @@
 {
   "name": "copr.js",
   "description": "Corpus of Place Representations (COPR) | copr-api > copr.js",
+  "private": false,
   "version": "0.0.1",
   "author": "Franz-Benjamin Mocnik",
   "license": "CC-BY-SA-4.0",
