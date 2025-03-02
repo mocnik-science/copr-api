@@ -10,7 +10,7 @@ Website: [https://copr.space-and-place.net](https://copr.space-and-place.net)
 
 To install the library, you will need [Python3](https://www.python.org) and [pip](https://pip.pypa.io).  Then, run
 ```bash
-pip3 install copr-py
+pip3 install copr.py
 ```
 ## Publishing
 You can publish the library by executing the following steps:

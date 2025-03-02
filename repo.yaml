@@ -27,7 +27,7 @@ readme:
 
       To install and build the library, you will need [Node.js](https://nodejs.org) and [Yarn](https://yarnpkg.com).  To install the production version, run
       ```bash
-      yarn add copr # add package from npm to a your project
+      yarn add copr.js # add package from npm to a your project
       ```
       
       Alternatively, you can install the local version included in this repository by running
@@ -42,7 +42,7 @@ readme:
 
       To install the package, you will need [Python3](https://www.python.org) and [pip](https://pip.pypa.io).  To install the production version, run
       ```bash
-      pip3 install copr-py # install package from PyPI
+      pip3 install copr.py # install package from PyPI
       ```
       
       Alternatively, you can install the local version included in this repository by running
@@ -79,7 +79,7 @@ readme:
     installation: |
       To install the library, you will need [Node.js](https://nodejs.org) and [Yarn](https://yarnpkg.com).  Then, run
       ```bash
-      yarn add copr
+      yarn add copr.js
       ```
     usage:
       For further information, see [{{copr.url}}]({{copr.url}}).
@@ -91,7 +91,7 @@ readme:
     installation: |
       To install the library, you will need [Python3](https://www.python.org) and [pip](https://pip.pypa.io).  Then, run
       ```bash
-      pip3 install copr-py
+      pip3 install copr.py
       ```
       ## Publishing
       You can publish the library by executing the following steps:

@@ -10,7 +10,7 @@ Website: [https://copr.space-and-place.net](https://copr.space-and-place.net)
 
 To install the library, you will need [Node.js](https://nodejs.org) and [Yarn](https://yarnpkg.com).  Then, run
 ```bash
-yarn add copr
+yarn add copr.js
 ```
 
 ## Usage
