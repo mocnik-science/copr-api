@@ -59,3 +59,4 @@ build
 /copr.py/copr.egg-info
 /copr.py/.pytest_cache
 /copr.py/.coverage
+

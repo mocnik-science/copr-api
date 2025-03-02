@@ -17,12 +17,15 @@ with open('./copr/__info__.py', 'w') as f:
 
 # see setup.cfg for metadata
 setuptools.setup(
-  name=pkgName,
+  name='copr.py',
   packages=setuptools.find_packages(),
   install_requires=[
     'jmespath',
   ],
   extras_require={
+    'publish': [
+      'twine',
+    ],
     'test': [
       'pytest',
       'pytest-sugar',

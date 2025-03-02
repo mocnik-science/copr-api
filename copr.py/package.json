@@ -10,8 +10,9 @@
     "url": "git+https://gitea.franz-benjamin.net/copr/copr-api.git"
   },
   "scripts": {
-    "install": "pip3 install .",
+    "install": "pip3 install setuptools && pip3 install .",
     "install:dev": "pip3 install -e .\"[test]\"",
+    "install:publish": "pip3 install .\"[publish]\"",
     "build": ":",
     "watch": ":",
     "test": "pytest --verbose",

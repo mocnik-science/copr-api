@@ -93,5 +93,12 @@ readme:
       ```bash
       pip3 install copr-py
       ```
+      ## Publishing
+      You can publish the library by executing the following steps:
+      ```bash
+      cd copr.py
+      yarn install:publish
+      yarn publish
+      ```
     usage:
       For further information, see [{{copr.url}}]({{copr.url}}).
