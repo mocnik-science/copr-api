@@ -7,7 +7,7 @@
   "license": "CC-BY-SA-4.0",
   "repository": {
     "type": "git",
-    "url": "git+https://gitea.franz-benjamin.net/copr/copr-api.git"
+    "url": "https://gitea.franz-benjamin.net/copr/copr-api"
   },
   "main": "src/copr.node.mjs",
   "targets": {
@@ -32,6 +32,7 @@
     "test:node": "mocha --extension mjs",
     "test:browser": "ln -s ../dist/copr.min.js test/copr.min.js && ln -s ../dist/copr.min.js.map test/copr.min.js.map && http-server ./test -o && rm -rf test/copr.min.js test/copr.min.js.map",
     "test": "run-s 'test:*'",
+    "publish": "yarn build && yarn npm publish --access public",
     "clean": "rm -rf ./dist"
   },
   "devDependencies": {
@@ -43,5 +44,8 @@
   },
   "dependencies": {
     "jmespath": "^0.16.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   }
 }
